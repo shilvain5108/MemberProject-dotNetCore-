@@ -1,0 +1,16 @@
+Create DataBase MemberDB
+
+use MemberDB
+
+Create Table MemberDatas(
+id Bigint identity(1,1) Primary key not null,
+[name] nvarchar(10) null,
+mobileNumber nvarchar(10) null ,
+birthday DateTime null,
+loginAccount nvarchar(100) default '' not null,
+loginPwd nvarchar(max) default '' not null
+)
+
+insert into MemberDatas values('謝世文','0981712610','1991-08-17','admin','12345')
+
+select * from MemberData

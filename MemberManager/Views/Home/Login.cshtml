@@ -1,0 +1,28 @@
+﻿
+<script type="text/javascript">
+
+</script>
+<div>
+    <a class="hiddenanchor" id="signup"></a>
+    <a class="hiddenanchor" id="signin"></a>
+
+    <div class="login_wrapper">
+        <div class="form login_form">
+            <section class="login_content">
+                <form id="loginForm" name="loginForm" method="post" action="@Url.Action("UserLogin","Home",new {Area = "Login"})">
+                    <h1>購物網站</h1>
+                    <div>
+                        <input name="userAcc" type="text" class="form-control" placeholder="Username" required="" />
+                    </div>
+                    <div>
+                        <input name="userPwd" type="password" class="form-control" placeholder="Password" required="" />
+                    </div>
+                    <div>
+                        <button id="loginButton" name="loginButton" type="submit">登入</button>
+                        @*<a class="btn btn-default submit" href="javascript:void(0);" onclick="$(this).closest('form').submit();">登入</a>*@
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
