@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MemberManager.Context;
+//using MemberManager.Filters;
 using MemberManager.Manager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,23 +33,28 @@ namespace MemberManager
             sqlServerOptions => sqlServerOptions.CommandTimeout(300)));
             //services.AddControllersWithViews();
 
-            services.AddScoped<MemberDatasManager>();
+            services.AddScoped<MembersManager>();
+            services.AddScoped<OrderDetailsManager>();
+            services.AddScoped<OrderDetailStatusManager>();
+            services.AddScoped<OrdersManager>();
+            services.AddScoped<OrderStatusManager>();
+            services.AddScoped<ProductsManager>();
+            services.AddScoped<ProductTypesManager>();
+            services.AddScoped<SendTypesManager>();
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(15);
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc(options =>
             {
-                //options.Filters.Add<VerifyParametersFilter>();
-                //options.Filters.Add<ActionLoggerFilter>();
-                //options.Filters.Add<HostMappingFilter>();
-                //options.Filters.Add<UserLoginFilter>();
-                //options.Filters.Add<UserTaskFilter>();
+          
 
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,8 +85,6 @@ namespace MemberManager
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseSession();//不加上這句專案內中使用session會報錯
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MemberManager.Models.DbModels
 {
-    public class MemberDatas : AbstractEntity
+    public class Members : AbstractAppEntity
     {
         public string name { get; set; }
 

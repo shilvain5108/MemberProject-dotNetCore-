@@ -1,16 +1,73 @@
+
 Create DataBase MemberDB
 
 use MemberDB
 
-Create Table MemberDatas(
+Create Table members(
 id Bigint identity(1,1) Primary key not null,
 [name] nvarchar(10) null,
 mobileNumber nvarchar(10) null ,
 birthday DateTime null,
 loginAccount nvarchar(100) default '' not null,
-loginPwd nvarchar(max) default '' not null
+loginPwd nvarchar(max) default '' not null,
+removed bit not null
 )
 
-insert into MemberDatas values('謝世文','0981712610','1991-08-17','admin','12345')
+insert into members values('謝世文','0981712610','1991-08-17','admin','12345')
 
-select * from MemberData
+select * from members
+
+Create Table [orders](
+id Bigint identity(1,1) Primary key not null,
+memberDatasId Bigint not null,
+orderStatusId int not null,
+sendTypeId int not null,
+[address] nvarchar(100) null,
+phone nvarchar(20) null,
+memo nvarchar(200) null,
+createDate datetime not null,
+removed bit not null
+)
+
+Create Table orderDetail (
+id Bigint identity(1,1) Primary key not null,
+productId int not null,
+statusId int not null,
+removed bit not null
+)
+
+Create Table products (
+id Bigint identity(1,1) Primary key not null,
+productTypeId Bigint not null,
+[name] nvarchar(100) default '' not null,
+sort int not null,
+removed bit not null
+)
+
+Create Table productTypes (
+id Bigint identity(1,1) Primary key not null,
+[name] nvarchar(100) default '' not null,
+sort int not null,
+removed bit not null
+)
+
+Create Table sendTypes (
+id Bigint identity(1,1) Primary key not null,
+[name] nvarchar(100) default '' not null,
+sort int not null,
+removed bit not null
+)
+
+Create Table orderStatus (
+id Bigint identity(1,1) Primary key not null,
+[name] nvarchar(100) default '' not null,
+sort int not null,
+removed bit not null
+)
+
+Create Table orderDetailStatus (
+id Bigint identity(1,1) Primary key not null,
+[name] nvarchar(100) default '' not null,
+sort int not null,
+removed bit not null
+)

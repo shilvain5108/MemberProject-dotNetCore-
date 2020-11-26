@@ -11,29 +11,38 @@ using MemberManager.Manager;
 using Microsoft.AspNetCore.Http;
 using MemberManager.Context;
 using MemberManager.Extensions;
+using MemberManager.Attribute;
 
 namespace MemberManager.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ISession session;
-        private readonly ILogger<HomeController> _logger;
-        private readonly MemberDatasManager memberDatasManager;
+        private readonly ILogger<HomeController> logger;
+        private readonly MembersManager membersManager;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public HomeController(
-            MemberDatasManager _memberDatasManager,
-            ILogger<HomeController> logger, 
+            MembersManager _membersManager,
+            ILogger<HomeController> _logger, 
             IHttpContextAccessor _httpContextAccessor)
         {
-            memberDatasManager = _memberDatasManager;
-            _logger = logger;
+            membersManager = _membersManager;
+            logger = _logger;
+            httpContextAccessor = _httpContextAccessor;
             session = _httpContextAccessor.HttpContext.Session;
         }
 
         public IActionResult Index()
         {
-            List<MemberDatas> members = memberDatasManager.GetEntitiesQ().ToList();
-            MemberDatas member = memberDatasManager.GetById(1);
+            UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
+
+           
+            Members member = userContext.member;
+            if(member != null)
+            {
+                ViewData["memberName"] = member.name;
+            }
 
             return View();
         }
@@ -49,35 +58,61 @@ namespace MemberManager.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+      
         public IActionResult Login()
         {
             return View();
         }
 
+
         public IActionResult UserLogin(string userAcc,string userPwd)
         {
-            MemberDatas member = memberDatasManager.GetByAcc(userAcc);
-            if (member != null)
+            Members member = null;
+            string errMsg = "";
+
+            //防呆
+            if (string.IsNullOrWhiteSpace(userAcc))
+                errMsg += "請輸入密碼\n";
+
+            if (string.IsNullOrWhiteSpace(userPwd))
+                errMsg += "請輸入密碼\n";
+
+            if(string.IsNullOrWhiteSpace(errMsg))
+            {
+                member = membersManager.GetByAcc(userAcc);
+                if (member != null)
+                {
+                    if (string.IsNullOrWhiteSpace(member.loginPwd))
+                        errMsg += "請通知管理員協助修改登入密碼\n";
+                    else if(!member.loginPwd.Equals(userPwd))
+                        errMsg += "密碼錯誤\n";
+                }
+                else
+                    errMsg += "找不到帳號啦幹\n";
+            }
+
+            if (string.IsNullOrWhiteSpace(errMsg) && member != null)
             {
                 CreateUserSession(member);
-                UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
 
-                UserContext userContext2 = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
-
-                return View("Index", "Home");
+                return RedirectToAction("Index", "Home");
             }
             else
-            {
-                return RedirectToAction("Index", "Error",new { errorCode = "404", errorMessage = "幹...好" });
-            }
+                return RedirectToAction("Index", "Error", new { errorCode = "404", errorMessage = errMsg });
         }
 
-        private void CreateUserSession(MemberDatas memberData)
+        private void CreateUserSession(Members members)
         {
             UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
-            userContext.memberData = memberData;
+            if (userContext == null) userContext = new UserContext();
+
+            userContext.member = members;
 
             session.SetObjectAsJson(UserContext.SESSION_NAME.ToString(), userContext);
+
+            userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
+
+            Members tempMembers = userContext.member;
         }
     }
 }

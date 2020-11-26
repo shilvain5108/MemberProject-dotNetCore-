@@ -12,13 +12,20 @@ namespace MemberManager.Context
     {
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly ISession session;
-        public MemberContext(DbContextOptions<MemberContext> options, IHttpContextAccessor _httpContextAccessor) : base(options)
+        public MemberContext(DbContextOptions<MemberContext> options, 
+            IHttpContextAccessor _httpContextAccessor) : base(options)
         {
             httpContextAccessor = _httpContextAccessor;
-            //session = httpContextAccessor.HttpContext.Session;
+            session = httpContextAccessor.HttpContext.Session;
         }
 
-
-        public DbSet<MemberDatas> MemberDatas { get; set; }
+        public DbSet<Members> Members { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<OrderDetailStatus> OrderDetailStatus { get; set; }
+        public DbSet<Orders> Orders { get; set; }
+        public DbSet<OrderStatus> OrderStatus { get; set; }
+        public DbSet<Products> Products { get; set; }
+        public DbSet<ProductTypes> ProductTypes { get; set; }
+        public DbSet<SendTypes> SendTypes { get; set; }
     }
 }

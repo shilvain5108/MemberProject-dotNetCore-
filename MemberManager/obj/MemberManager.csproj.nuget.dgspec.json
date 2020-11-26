@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\a5108\\Desktop\\NetCore空白專案(含底層的Manager)\\MemberManager\\MemberManager\\MemberManager.csproj": {}
+    "C:\\Users\\a5108\\Desktop\\git專案\\gitMemberProject(dotNetCore)\\MemberManager\\MemberManager.csproj": {}
   },
   "projects": {
-    "C:\\Users\\a5108\\Desktop\\NetCore空白專案(含底層的Manager)\\MemberManager\\MemberManager\\MemberManager.csproj": {
+    "C:\\Users\\a5108\\Desktop\\git專案\\gitMemberProject(dotNetCore)\\MemberManager\\MemberManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\a5108\\Desktop\\NetCore空白專案(含底層的Manager)\\MemberManager\\MemberManager\\MemberManager.csproj",
+        "projectUniqueName": "C:\\Users\\a5108\\Desktop\\git專案\\gitMemberProject(dotNetCore)\\MemberManager\\MemberManager.csproj",
         "projectName": "MemberManager",
-        "projectPath": "C:\\Users\\a5108\\Desktop\\NetCore空白專案(含底層的Manager)\\MemberManager\\MemberManager\\MemberManager.csproj",
+        "projectPath": "C:\\Users\\a5108\\Desktop\\git專案\\gitMemberProject(dotNetCore)\\MemberManager\\MemberManager.csproj",
         "packagesPath": "C:\\Users\\a5108\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\a5108\\Desktop\\NetCore空白專案(含底層的Manager)\\MemberManager\\MemberManager\\obj\\",
+        "outputPath": "C:\\Users\\a5108\\Desktop\\git專案\\gitMemberProject(dotNetCore)\\MemberManager\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\a5108\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -38,6 +38,14 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "Microsoft.AspNetCore.Http.Extensions": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
+            "Microsoft.AspNetCore.Session": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[3.1.6, )"
