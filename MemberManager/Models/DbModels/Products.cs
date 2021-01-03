@@ -11,6 +11,8 @@ namespace MemberManager.Models.DbModels
 
         public string name { get; set; }
 
+        public int price { get; set; }
+
         public int sort { get; set; }
     }
 }

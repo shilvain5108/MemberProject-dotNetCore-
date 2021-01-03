@@ -19,30 +19,33 @@ namespace MemberManager.Controllers
     {
         private readonly ISession session;
         private readonly ILogger<HomeController> logger;
+
         private readonly MembersManager membersManager;
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly ProductsManager productsManager;
+        private readonly SysRolesManager sysRolesManager;
+        private readonly MemberRolesManager memberRolesManager;
 
         public HomeController(
+            ProductsManager _productsManager,
             MembersManager _membersManager,
-            ILogger<HomeController> _logger, 
-            IHttpContextAccessor _httpContextAccessor)
+            SysRolesManager _sysRolesManager,
+            MemberRolesManager _memberRolesManager,
+            IHttpContextAccessor _httpContextAccessor,
+            ILogger<HomeController> _logger)
         {
             membersManager = _membersManager;
+            productsManager = _productsManager;
+            sysRolesManager = _sysRolesManager;
+            memberRolesManager = _memberRolesManager;
+
             logger = _logger;
-            httpContextAccessor = _httpContextAccessor;
             session = _httpContextAccessor.HttpContext.Session;
         }
 
         public IActionResult Index()
         {
             UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
-
-           
-            Members member = userContext.member;
-            if(member != null)
-            {
-                ViewData["memberName"] = member.name;
-            }
+            ViewData["userContext"] = userContext;
 
             return View();
         }
@@ -58,15 +61,15 @@ namespace MemberManager.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-      
+        [IgnoreUserLoginFilter]
         public IActionResult Login()
         {
-            //測試用VS Code 的版控123
+            ClearLoginInformation();
             return View();
         }
 
-
-        public IActionResult UserLogin(string userAcc,string userPwd)
+        [IgnoreUserLoginFilter]
+        public IActionResult UserLogin(string userAcc, string userPwd)
         {
             Members member = null;
             string errMsg = "";
@@ -78,14 +81,14 @@ namespace MemberManager.Controllers
             if (string.IsNullOrWhiteSpace(userPwd))
                 errMsg += "請輸入密碼\n";
 
-            if(string.IsNullOrWhiteSpace(errMsg))
+            if (string.IsNullOrWhiteSpace(errMsg))
             {
                 member = membersManager.GetByAcc(userAcc);
                 if (member != null)
                 {
                     if (string.IsNullOrWhiteSpace(member.loginPwd))
                         errMsg += "請通知管理員協助修改登入密碼\n";
-                    else if(!member.loginPwd.Equals(userPwd))
+                    else if (!member.loginPwd.Equals(userPwd))
                         errMsg += "密碼錯誤\n";
                 }
                 else
@@ -96,10 +99,16 @@ namespace MemberManager.Controllers
             {
                 CreateUserSession(member);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Products");
             }
             else
                 return RedirectToAction("Index", "Error", new { errorCode = "404", errorMessage = errMsg });
+        }
+
+        public IActionResult Products()
+        {
+            List<Products> productses = productsManager.GetEntitiesQ().ToList();
+            return View(productses);
         }
 
         private void CreateUserSession(Members members)
@@ -107,13 +116,31 @@ namespace MemberManager.Controllers
             UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
             if (userContext == null) userContext = new UserContext();
 
-            userContext.member = members;
+            //網站權限
+            if(members != null && members.id > 0)
+            {
+                List<MemberRoles> memberRoleses 
+                    = memberRolesManager.GetEntitiesQ().Where(m => m.memberId == members.id).ToList();
+                if(memberRoleses != null && memberRoleses.Count > 0)
+                {
+                    List<Int64> sysRolesIds = memberRoleses.Select(m => m.sysRolesId).ToList();
+                    List<SysRoles> sysRoleses = sysRolesManager.GetByIds(sysRolesIds).ToList();
+                    if(sysRoleses != null && sysRoleses.Count > 0)
+                    {
+                        userContext.roles = sysRoleses.Select(m => m.siteRole).ToList();
+                    }
+                }
+              
 
-            session.SetObjectAsJson(UserContext.SESSION_NAME.ToString(), userContext);
+                userContext.user = members;
 
-            userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
+                session.SetObjectAsJson(UserContext.SESSION_NAME.ToString(), userContext);
+            }
+        }
 
-            Members tempMembers = userContext.member;
+        private void ClearLoginInformation()
+        {
+            session.SetObjectAsJson(UserContext.SESSION_NAME.ToString(), null);
         }
     }
 }

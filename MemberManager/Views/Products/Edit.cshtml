@@ -1,0 +1,84 @@
+﻿@using MemberManager.Models.DbModels;
+
+@model Products
+
+<script type="text/javascript">
+
+    $(function () {
+
+        var thisForm = $("form[name='thisForm']");
+
+        thisForm.find(".saveButton").click(function () {
+            $.ajax({
+                dataType: 'json',
+                //contentType: 'application/json; charset=utf-8',
+                type: 'POST',
+                url: '@Url.Action("Save", "Products")',
+                data: JSON.stringify({
+                    products: FormDataSerializeJsonString(thisForm)
+                }),
+                success: function (result) {
+
+                    if (result.success) {
+
+                        alert(result.message);
+                        //儲存成功
+
+                    } else {
+                        //儲存失敗
+                        alert(result.message);
+                    }
+                }
+            });
+        });
+
+    });
+
+</script>
+
+
+<div class="text-center">
+    <div>
+        @*action="@Url.Action("Save", "Products")"*@
+        <form name="thisForm">
+            <h1>產品</h1>
+
+            <div>
+                @*<input type="hidden" name="temp1" value="temp1" />*@
+
+                <input type="hidden" name="products.id" value="@Model.id" />
+                <input type="hidden" name="products.productTypeId" value="@Model.productTypeId" />
+                <input type="hidden" name="products.removed" value="@Model.removed" />
+                <div class="form-group row">
+                    <label class="col-md-5 col-sm-5 col-xs-6" style="text-align:right">名稱</label>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <input type="text" name="products.name" class="form-control col-md-8 col-xs-12" value="@Model.name" />
+                        @*@Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control col-md-8 col-xs-12" } })*@
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-sm-5 col-xs-6" style="text-align:right">價格</label>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <input type="text" name="products.price" class="form-control col-md-8 col-xs-12" value="@Model.price" />
+                        @*@Html.EditorFor(model => model.price, new { htmlAttributes = new { @class = "form-control col-md-8 col-xs-12" } })*@
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-sm-5 col-xs-6" style="text-align:right">排序</label>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <input type="text" name="products.sort" class="form-control col-md-8 col-xs-12" value="@Model.sort" />
+                        @*@Html.EditorFor(model => model.sort, new { htmlAttributes = new { @class = "form-control col-md-8 col-xs-12" } })*@
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-md-12 col-sm-12 col-xs-12"></label>
+            </div>
+            <div class="row">
+                <button type="button" name="saveButton" class="btn btn-primary saveButton">儲存</button>
+                @*<button name="saveButton" type="submit">儲存</button>*@
+                <a href="javascript:history.back()" class="btn btn-info" name="previousPage">回上一頁</a>
+            </div>
+        </form>
+    </div>
+</div>

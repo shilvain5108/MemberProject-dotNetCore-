@@ -1,4 +1,5 @@
-﻿using MemberManager.Models.DbModels;
+﻿using MemberManager.Models;
+using MemberManager.Models.DbModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace MemberManager.Context
     {
         public const string SESSION_NAME = "UserContext";
 
-        public Members member;
+        public Members user;
+
+        public List<SiteRole> roles;
     }
 }

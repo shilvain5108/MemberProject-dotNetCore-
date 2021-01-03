@@ -12,4 +12,11 @@ namespace MemberManager.Models
         Yes = 0,
         No = 1
     }
+
+    public enum SiteRole
+    {
+        Admin = 0,
+        Member = 1,
+        Business = 2
+    }
 }

@@ -1,4 +1,6 @@
 
+
+
 Create DataBase MemberDB
 
 use MemberDB
@@ -13,13 +15,34 @@ loginPwd nvarchar(max) default '' not null,
 removed bit not null
 )
 
-insert into members values('謝世文','0981712610','1991-08-17','admin','12345')
+insert into members values('謝世文','0981712610','1991-08-17','admin','12345',0)--1
+insert into members values('謝世文-使用者帳號','0981712610','1991-08-17','member','12345',0)--2
+insert into members values('謝世文-商家帳號','0981712610','1991-08-17','business','12345',0)--3
 
-select * from members
+Create Table sysRoles (
+id Bigint identity(1,1) Primary key not null,
+[name] nvarchar(100) default '' not null,
+removed bit not null
+)
+
+insert into sysRole values('Admin',0)--1 網站管理員
+insert into sysRole values('Member',0)--2 一般使用者
+insert into sysRole values('Business',0)--3 商家
+
+Create Table memberRoles (
+id Bigint identity(1,1) Primary key not null,
+memberId Bigint not null,
+sysRolesId Bigint not null,
+removed bit not null
+)
+
+insert into memberRoles values(1,1,0)
+insert into memberRoles values(2,2,0)
+insert into memberRoles values(3,3,0)
 
 Create Table [orders](
 id Bigint identity(1,1) Primary key not null,
-memberDatasId Bigint not null,
+memberId Bigint not null,
 orderStatusId int not null,
 sendTypeId int not null,
 [address] nvarchar(100) null,
@@ -36,20 +59,25 @@ statusId int not null,
 removed bit not null
 )
 
-Create Table products (
-id Bigint identity(1,1) Primary key not null,
-productTypeId Bigint not null,
-[name] nvarchar(100) default '' not null,
-sort int not null,
-removed bit not null
-)
-
 Create Table productTypes (
 id Bigint identity(1,1) Primary key not null,
 [name] nvarchar(100) default '' not null,
 sort int not null,
 removed bit not null
 )
+
+insert into productTypes values('3C產品',1,0)
+
+Create Table products (
+id Bigint identity(1,1) Primary key not null,
+productTypeId Bigint not null,
+[name] nvarchar(100) default '' not null,
+price int not null,
+sort int not null,
+removed bit not null
+)
+
+insert into products values(1,'藍芽耳機',1990,1,0)
 
 Create Table sendTypes (
 id Bigint identity(1,1) Primary key not null,
@@ -71,3 +99,5 @@ id Bigint identity(1,1) Primary key not null,
 sort int not null,
 removed bit not null
 )
+
+

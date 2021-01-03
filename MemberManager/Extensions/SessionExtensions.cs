@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace MemberManager.Extensions
 {
@@ -13,14 +14,13 @@ namespace MemberManager.Extensions
     {
         public static void SetObjectAsJson(this ISession session, string key, object value)
         {
-            session.SetString(key, JsonSerializer.Serialize(value));
+            session.SetString(key, JsonConvert.SerializeObject(value));
         }
 
         public static T GetObjectFromJson<T>(this ISession session, string key)
         {
             var value = session.GetString(key);
-
-            return value == null ? default(T) : JsonSerializer.Deserialize<T>(value);
+            return value == null ? default(T) : JsonConvert.DeserializeObject<T>(value);
         }
     }
 }

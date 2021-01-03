@@ -1,0 +1,82 @@
+﻿@using MemberManager.Models.DbModels;
+
+@model List<Products>
+
+    <script type="text/javascript">
+
+        $(function () {
+
+            var thisForm = $('#productForm');
+            var productsTable = thisForm.find("table[name='productsTable']");
+
+            //為每個編輯按鈕建立點擊事件
+            productsTable.find(".editBtn").each(function () {
+
+                //var editBtn = $(this);
+
+                //editBtn.click(function () {
+                //    console.log("幹你的!!");
+                //});
+            });
+
+            //新增產品
+
+        });
+
+    </script>
+
+    <div class="text-center">
+        <div>
+            <form id="productForm" name="productForm" method="post" action="@Url.Action("Index","Products")">
+
+                <h1>購物網站</h1>
+                <div class="col-md-8 col-sm-8 col-xs-12">
+                    <table class="table table-striped jambo_table bulk_action" name="productsTable">
+                        <thead>
+                            <tr>
+                                <td>商品名稱</td>
+                                <td>商品價格</td>
+                                <td>功能</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                if (Model != null && Model.Count > 0)
+                                {
+                                    foreach (Products products in Model)
+                                    {
+                                        <tr>
+                                            <td>@products.name</td>
+                                            <td>@products.price</td>
+                                            <th class="bulk-actions">
+                                                <input type="hidden" name="productsId" value="@products.id" />
+
+                                                <a href="@Url.Action("Edit", "Products" , new { productsId = products.id })" class="btn btn-primary editBtn">編輯</a>
+                                            </th>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <label class="col-md-12 col-sm-12 col-xs-12">待結帳清單</label>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <table class="table table-striped jambo_table bulk_action">
+                        </table>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <label class="col-md-12 col-sm-12 col-xs-12"></label>
+                </div>
+                <div class="row">
+                    <button id="loginButton" name="loginButton" type="submit"></button>
+                    @*<a class="btn btn-default submit" href="javascript:void(0);" onclick="$(this).closest('form').submit();">登入</a>*@
+                </div>
+            </form>
+        </div>
+    </div>
+

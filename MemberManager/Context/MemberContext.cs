@@ -27,5 +27,11 @@ namespace MemberManager.Context
         public DbSet<Products> Products { get; set; }
         public DbSet<ProductTypes> ProductTypes { get; set; }
         public DbSet<SendTypes> SendTypes { get; set; }
+
+        public DbSet<SysRoles> SysRoles { get; set; }
+
+        public DbSet<MemberRoles> MemberRoles { get; set; }
+
+        
     }
 }

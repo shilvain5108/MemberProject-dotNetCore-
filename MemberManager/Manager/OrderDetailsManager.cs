@@ -11,7 +11,7 @@ namespace MemberManager.Manager
     public class OrderDetailsManager : AbstractEntityManager<OrderDetails>
     {
         public OrderDetailsManager(MemberContext _db,
-IHttpContextAccessor _httpContextAccessor) : base(_db)
+           IHttpContextAccessor _httpContextAccessor) : base(_db)
         {
         }
 

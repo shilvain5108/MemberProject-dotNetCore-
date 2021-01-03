@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MemberManager.Attribute;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,8 @@ namespace MemberManager.Controllers
         {
             logger = _logger;
         }
+
+        [IgnoreUserLoginFilter]
         public IActionResult Index(string errorCode, string errorMessage)
         {
             ViewData["errorCode"] = errorCode;

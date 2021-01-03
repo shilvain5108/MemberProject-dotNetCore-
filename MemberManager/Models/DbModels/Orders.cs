@@ -7,7 +7,7 @@ namespace MemberManager.Models.DbModels
 {
     public class Orders : AbstractAppEntity
     {
-        public Int64 memberDatasId { get; set; }
+        public Int64 memberId { get; set; }
 
         public int orderStatusId { get; set; }
 

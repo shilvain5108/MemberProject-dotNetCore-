@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MemberManager.Context;
+using MemberManager.Filters;
 //using MemberManager.Filters;
 using MemberManager.Manager;
 using Microsoft.AspNetCore.Builder;
@@ -41,16 +42,23 @@ namespace MemberManager
             services.AddScoped<ProductsManager>();
             services.AddScoped<ProductTypesManager>();
             services.AddScoped<SendTypesManager>();
+            services.AddScoped<SysRolesManager>();
+            services.AddScoped<MemberRolesManager>();
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            // 將 Session 存在 ASP.NET Core 記憶體中
+            services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddMvc(options =>
             {
-          
+                options.Filters.Add<UserLoginFilter>();
 
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
@@ -77,7 +85,8 @@ namespace MemberManager
 
             app.UseAuthorization();
 
-            app.UseSession();//不加上這句專案內中使用session會報錯
+            //不加上這句專案內中使用session會報錯
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -85,6 +94,8 @@ namespace MemberManager
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
         }
     }
 }
