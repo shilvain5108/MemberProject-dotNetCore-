@@ -1,13 +1,14 @@
-﻿@using MemberManager.Models.DbModels;
+﻿
 @using MemberManager.Models.ViewSearchModel;
+@using MemberManager.Models.DbModels;
 
-@model List<Products>
+@model List<ProductTypes>
 
 <script type="text/javascript">
 
     $(function () {
 
-        var thisForm = $("form[name='productForm']");
+        var thisForm = $("form[name='productTypeForm']");
         var searchButton = $("button[name='searchButton']");
 
         searchButton.click(function () {
@@ -16,7 +17,7 @@
                 dataType: 'json',
                 //contentType: 'application/json; charset=utf-8',
                 type: 'POST',
-                url: '@Url.Action("Index", "Products")',
+                url: '@Url.Action("Index", "ProductTypes")',
                 data: JSON.stringify({
                     products: FormDataSerializeJsonString(thisForm)
                 }),
@@ -39,48 +40,42 @@
 </script>
 
 <div class="text-center">
-    <form name="productForm" method="post" action="@Url.Action("Index","Products")" class="form-horizontal form-label-left">
+    <form name="productTypeForm" method="post" action="@Url.Action("Index","ProductTypes")" class="form-horizontal form-label-left">
         <div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <h1>@(ProductSearchModel.ViewTitle)-查詢條件</h1>
+                    <h1>@(ProductTypesSearchModel.ViewTitle)-查詢條件</h1>
                     <div class="form-group row">
                         @{
-                            string productName = "";
+                            string productTypeName = "";
 
-                            ProductSearchModel parameters = ViewData["searchParameters"] as ProductSearchModel;
+                            ProductTypesSearchModel parameters = ViewData["searchParameters"] as ProductTypesSearchModel;
                             if (parameters != null)
                             {
-                                productName = parameters.productName;
+                                productTypeName = parameters.productTypeName;
 
                             }
                         }
-                        <label class="col-md-2 col-sm-2 col-xs-6">產品名稱</label>
+                        <label class="col-md-2 col-sm-2 col-xs-6">類別名稱</label>
                         <div class="col-md-2 col-sm-2 col-xs-6">
-                            <input type="text" name="productName" class="form-control" value="@productName" />
-                        </div>
-                        <label class="col-md-3 col-sm-3 col-xs-6">產品類別</label>
-                        <div class="col-md-2 col-sm-2 col-xs-6">
-                            @Html.DropDownList("productTypesId", (IEnumerable<SelectListItem>)ViewData["productTypeses"], new { @class = "form-control" })
+                            <input type="text" name="productTypeName" class="form-control" value="@productTypeName" />
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-5 col-sm-5 col-xs-12"></div>
                         <div class="col-md-2 col-sm-2 col-xs-12">
                             <button name="searchButton" class="btn btn-primary">查詢</button>
-                            <a href="@Url.Action("Index", "Products")" class="btn btn-info editBtn">清除</a>
+                            <a href="@Url.Action("Index", "ProductTypes")" class="btn btn-info editBtn">清除</a>
                         </div>
                     </div>
                     <hr>
-                    <h1>@(ProductSearchModel.ViewTitle)-查詢結果</h1>
+                    <h1>@(ProductTypesSearchModel.ViewTitle)-查詢結果</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <table class="table table-striped jambo_table bulk_action" name="productsTable" style="border:3px #cccccc solid;" cellpadding="10" border='1'>
                                 <thead>
                                     <tr>
-                                        <td style="font-weight:bold;color:saddlebrown">商品名稱</td>
-                                        <td style="font-weight:bold;color:saddlebrown">商品類別</td>
-                                        <td style="font-weight:bold;color:saddlebrown">商品價格</td>
+                                        <td style="font-weight:bold;color:saddlebrown">產品類別</td>
                                         <td style="font-weight:bold;color:saddlebrown">功能</td>
                                     </tr>
                                 </thead>
@@ -88,20 +83,12 @@
                                     @{
                                         if (Model != null && Model.Count > 0)
                                         {
-                                            foreach (Products products in Model)
+                                            foreach (ProductTypes productTypes in Model)
                                             {
                                                 <tr>
-                                                    <td>@products.name</td>
-                                                    @{
-                                                        if (products.productTypes != null && products.productTypes.id > 0)
-                                                        {
-                                                            <td>@products.productTypes.name</td>
-                                                        }
-                                                    }
-
-                                                    <td>@products.price</td>
+                                                    <td>@productTypes.name</td>
                                                     <th class="bulk-actions">
-                                                        <a href="@Url.Action("Edit", "Products" , new { id = products.id })" class="btn btn-primary editBtn">編輯</a>
+                                                        <a href="@Url.Action("Edit", "ProductTypes" , new { id = productTypes.id })" class="btn btn-primary editBtn">編輯</a>
                                                     </th>
                                                 </tr>
                                             }

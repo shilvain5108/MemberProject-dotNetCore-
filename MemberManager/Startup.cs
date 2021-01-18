@@ -6,6 +6,7 @@ using MemberManager.Context;
 using MemberManager.Filters;
 //using MemberManager.Filters;
 using MemberManager.Manager;
+using MemberManager.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -44,6 +45,10 @@ namespace MemberManager
             services.AddScoped<SendTypesManager>();
             services.AddScoped<SysRolesManager>();
             services.AddScoped<MemberRolesManager>();
+            services.AddScoped<SysFunctionsManager>();
+            services.AddScoped<SysRolesFunctionsManager>();
+
+            services.AddScoped<ProductsService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

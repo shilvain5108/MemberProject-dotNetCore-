@@ -24,12 +24,17 @@ namespace MemberManager.Controllers
         private readonly ProductsManager productsManager;
         private readonly SysRolesManager sysRolesManager;
         private readonly MemberRolesManager memberRolesManager;
+        private readonly SysFunctionsManager sysFunctionsManager;
+        private readonly SysRolesFunctionsManager sysRolesFunctionsManager;
 
         public HomeController(
             ProductsManager _productsManager,
             MembersManager _membersManager,
             SysRolesManager _sysRolesManager,
             MemberRolesManager _memberRolesManager,
+            SysFunctionsManager _sysFunctionsManager,
+            SysRolesFunctionsManager _sysRolesFunctionsManager,
+
             IHttpContextAccessor _httpContextAccessor,
             ILogger<HomeController> _logger)
         {
@@ -37,6 +42,8 @@ namespace MemberManager.Controllers
             productsManager = _productsManager;
             sysRolesManager = _sysRolesManager;
             memberRolesManager = _memberRolesManager;
+            sysFunctionsManager = _sysFunctionsManager;
+            sysRolesFunctionsManager = _sysRolesFunctionsManager;
 
             logger = _logger;
             session = _httpContextAccessor.HttpContext.Session;
@@ -99,7 +106,7 @@ namespace MemberManager.Controllers
             {
                 CreateUserSession(member);
 
-                return RedirectToAction("Index", "Products");
+                return RedirectToAction("Index", "Home");
             }
             else
                 return RedirectToAction("Index", "Error", new { errorCode = "404", errorMessage = errMsg });
@@ -117,20 +124,33 @@ namespace MemberManager.Controllers
             if (userContext == null) userContext = new UserContext();
 
             //網站權限
-            if(members != null && members.id > 0)
+            if (members != null && members.id > 0)
             {
-                List<MemberRoles> memberRoleses 
+                //準備登入者的權限清單以及可用的功能清單
+                List<MemberRoles> memberRoleses
                     = memberRolesManager.GetEntitiesQ().Where(m => m.memberId == members.id).ToList();
-                if(memberRoleses != null && memberRoleses.Count > 0)
+                if (memberRoleses != null && memberRoleses.Count > 0)
                 {
                     List<Int64> sysRolesIds = memberRoleses.Select(m => m.sysRolesId).ToList();
-                    List<SysRoles> sysRoleses = sysRolesManager.GetByIds(sysRolesIds).ToList();
-                    if(sysRoleses != null && sysRoleses.Count > 0)
+                    if (sysRolesIds != null && sysRolesIds.Count > 0)
                     {
+                        List<Int64> sysFunctionIds = 
+                            sysRolesFunctionsManager.GetEntitiesQ()
+                            .Where(m => sysRolesIds.Contains(m.sysRoleId))
+                            .Select(m => m.sysFunctionsId).ToList();
+                        if(sysFunctionIds != null && sysFunctionIds.Count > 0)
+                        {
+                            List<SysFunctions> sysFunctions = 
+                                sysFunctionsManager.GetEntitiesQ()
+                                .Where(m => sysFunctionIds.Contains(m.id)).ToList();
+
+                            userContext.sysFunctions = sysFunctions;
+                        }
+
+                        List<SysRoles> sysRoleses = sysRolesManager.GetByIds(sysRolesIds).ToList();
                         userContext.roles = sysRoleses.Select(m => m.siteRole).ToList();
                     }
                 }
-              
 
                 userContext.user = members;
 

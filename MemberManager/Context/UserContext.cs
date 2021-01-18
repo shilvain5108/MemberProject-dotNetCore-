@@ -14,5 +14,7 @@ namespace MemberManager.Context
         public Members user;
 
         public List<SiteRole> roles;
+
+        public List<SysFunctions> sysFunctions;//顯示上方的功能清單
     }
 }

@@ -8,7 +8,9 @@
 
         var thisForm = $("form[name='thisForm']");
 
-        thisForm.find(".saveButton").click(function () {
+        thisForm
+            .on("click", ".saveButton", function () {
+
             $.ajax({
                 dataType: 'json',
                 //contentType: 'application/json; charset=utf-8',
@@ -28,8 +30,18 @@
                         //儲存失敗
                         alert(result.message);
                     }
-                }
-            });
+                }});
+            })
+            .on("change", "select[name='productTypeses']", function () {
+
+                var productTypesId = $(this).find("option:selected").val();
+                thisForm.find("input[name='products.productTypeId']").val(productTypesId);
+            })
+            ;
+
+        thisForm.find(".saveButton").click(function () {
+
+
         });
 
     });
@@ -54,6 +66,14 @@
                     <div class="col-md-3 col-sm-3 col-xs-6">
                         <input type="text" name="products.name" class="form-control col-md-8 col-xs-12" value="@Model.name" />
                         @*@Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control col-md-8 col-xs-12" } })*@
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-5 col-sm-5 col-xs-6" style="text-align:right">產品類別</label>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <input type="hidden" name="products.productTypeId" value="" />
+                        @Html.DropDownList("productTypeses", (IEnumerable<SelectListItem>)ViewData["productTypeses"], new { @class = "form-control" })
+
                     </div>
                 </div>
                 <div class="form-group row">

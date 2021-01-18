@@ -32,6 +32,8 @@ namespace MemberManager.Context
 
         public DbSet<MemberRoles> MemberRoles { get; set; }
 
-        
+        public DbSet<SysFunctions> SysFunctions { get; set; }
+
+        public DbSet<SysRolesFunctions> SysRolesFunctions { get; set; }
     }
 }

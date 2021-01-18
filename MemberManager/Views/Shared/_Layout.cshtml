@@ -1,9 +1,16 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
+@using MemberManager.Models.DbModels;
+@using MemberManager.Context;
+@using MemberManager.Extensions;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor httpContextAccessor
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MemberManager</title>
+    <title>世文的電子商城</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/custom.css" />
@@ -12,21 +19,40 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">產品</a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">登出</a>
-                </div>
+                @{
+                    ISession session = httpContextAccessor.HttpContext.Session;
+                    UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
+                    if (userContext != null)
+                    {
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">首頁</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+
+
+                        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                            <ul class="navbar-nav flex-grow-1">
+                                @{
+                                    List<SysFunctions> sysFuynctionses = userContext.sysFunctions;
+                                    if (sysFuynctionses != null && sysFuynctionses.Count > 0)
+                                    {
+                                        foreach (SysFunctions sysFuynctions in sysFuynctionses)
+                                        {
+                                            <li class="nav-item">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="@sysFuynctions.controllerName" asp-action="@sysFuynctions.actionName">@sysFuynctions.displayName</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+
+             
+                    }
+                }
+
             </div>
         </nav>
 
@@ -38,8 +64,86 @@
     </header>
 
     <div class="container">
-        <main role="main" class="pb-3">
+        <div id="mainDiv" class="right_col" role="main">
             @RenderBody()
+        </div>
+        <main role="main" class="pb-3" hidden>
+            <div class="col-md-3 left_col">
+                @{
+                    string roleName = "";
+                    string userName = "";
+                    if (userContext != null)
+                    {
+                        if (userContext.roles.Contains(SiteRole.Admin))
+                        {
+                            roleName = "系統管理員";
+                        }
+                        else if (userContext.roles.Contains(SiteRole.Member))
+                        {
+                            roleName = "一般使用者";
+                        }
+                        else if (userContext.roles.Contains(SiteRole.Business))
+                        {
+                            roleName = "商家";
+                        }
+
+                        if (userContext.user != null && userContext.user.id > 0)
+                        {
+                            userName = userContext.user.name;
+                        }
+                    }
+                }
+                @if (!string.IsNullOrWhiteSpace(roleName) && !string.IsNullOrWhiteSpace(userName))
+                {
+                    <div class="left_col scroll-view">
+                        <div class="navbar nav_title" style="border: 0;">
+                            <a href="@Url.Action("Index","Home", new { Area = "Admin" })" class="site_title">
+                                <span>首頁</span>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                        <!-- menu profile quick info -->
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="~/images/img.jpg" alt="..." class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                <span>Welcome,@(roleName)-@(userName)</span>
+                                <h2>系統選單</h2>
+                            </div>
+                        </div>
+                        <!-- /menu profile quick info -->
+
+                        <br />
+
+                        <!-- sidebar menu -->
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                            <div class="menu_section">
+                                @if (userContext != null && userContext.sysFunctions != null && userContext.sysFunctions.Count() > 0)
+                                {
+                                    <ul class="nav side-menu">
+
+                                        @foreach (SysFunctions sysFunctions in userContext.sysFunctions)
+                                        {
+                                            <li>
+                                                <a><i class="fa fa-home"></i>@sysFunctions.displayName <span class="fa fa-chevron-down"></span></a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+
+                            </div>
+                        </div>
+                        <div>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">登出</a>
+                        </div>
+                    </div>
+                }
+
+                <div id="mainDiv" class="right_col" role="main">
+                    @RenderBody()
+                </div>
+            </div>
         </main>
 
         <script src="~/js/site.js" asp-append-version="true"></script>
