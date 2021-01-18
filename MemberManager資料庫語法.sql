@@ -15,9 +15,9 @@ loginPwd nvarchar(max) default '' not null,
 removed bit not null
 )
 
-insert into members values('è¬ä¸–æ–‡','0981712610','1991-08-17','admin','12345',0)--1
-insert into members values('è¬ä¸–æ–‡-ä½¿ç”¨è€…å¸³è™Ÿ','0981712610','1991-08-17','member','12345',0)--2
-insert into members values('è¬ä¸–æ–‡-å•†å®¶å¸³è™Ÿ','0981712610','1991-08-17','business','12345',0)--3
+insert into members values('ÁÂ¥@¤å','0981712610','1991-08-17','admin','12345',0)--1
+insert into members values('ÁÂ¥@¤å-¨Ï¥ÎªÌ±b¸¹','0981712610','1991-08-17','member','12345',0)--2
+insert into members values('ÁÂ¥@¤å-°Ó®a±b¸¹','0981712610','1991-08-17','business','12345',0)--3
 
 Create Table sysRoles (
 id Bigint identity(1,1) Primary key not null,
@@ -25,9 +25,9 @@ id Bigint identity(1,1) Primary key not null,
 removed bit not null
 )
 
-insert into sysRole values('Admin',0)--1 ç¶²ç«™ç®¡ç†å“¡
-insert into sysRole values('Member',0)--2 ä¸€èˆ¬ä½¿ç”¨è€…
-insert into sysRole values('Business',0)--3 å•†å®¶
+insert into sysRoles values('Admin',0)--1 ºô¯¸ºŞ²z­û
+insert into sysRoles values('Member',0)--2 ¤@¯ë¨Ï¥ÎªÌ
+insert into sysRoles values('Business',0)--3 °Ó®a
 
 Create Table memberRoles (
 id Bigint identity(1,1) Primary key not null,
@@ -39,6 +39,33 @@ removed bit not null
 insert into memberRoles values(1,1,0)
 insert into memberRoles values(2,2,0)
 insert into memberRoles values(3,3,0)
+
+Create Table sysFunctions (
+id Bigint identity(1,1) Primary key not null,
+parentId Bigint not null,
+[displayName] nvarchar(100) default '' not null,
+controllerName nvarchar(100) default '' not null,
+actionName nvarchar(100) not null,
+sort int not null,
+removed bit not null
+)
+
+insert into sysFunctions values(0,'²£«~','Products','Index',1,0)
+insert into sysFunctions values(0,'²£«~Ãş«¬','ProductTypes','Index',1,0)
+
+Create Table sysRolesFunctions (
+id Bigint identity(1,1) Primary key not null,
+sysRoleId Bigint not null,
+sysFunctionsId Bigint not null,
+removed bit not null
+)
+
+insert into sysRolesFunctions values(1,1,0)
+insert into sysRolesFunctions values(1,2,0)
+insert into sysRolesFunctions values(2,1,0)
+insert into sysRolesFunctions values(2,2,0)
+insert into sysRolesFunctions values(3,1,0)
+insert into sysRolesFunctions values(3,2,0)
 
 Create Table [orders](
 id Bigint identity(1,1) Primary key not null,
@@ -66,7 +93,9 @@ sort int not null,
 removed bit not null
 )
 
-insert into productTypes values('3Cç”¢å“',1,0)
+insert into productTypes values('3C²£«~',1,0)
+insert into productTypes values('®a¹q',2,0)
+
 
 Create Table products (
 id Bigint identity(1,1) Primary key not null,
@@ -77,7 +106,8 @@ sort int not null,
 removed bit not null
 )
 
-insert into products values(1,'è—èŠ½è€³æ©Ÿ',1990,1,0)
+insert into products values(1,'ÂÅªŞ¦Õ¾÷',1990,1,0)
+insert into products values(2,'·LªiÄl',5990,1,0)
 
 Create Table sendTypes (
 id Bigint identity(1,1) Primary key not null,
@@ -99,5 +129,6 @@ id Bigint identity(1,1) Primary key not null,
 sort int not null,
 removed bit not null
 )
+
 
 
