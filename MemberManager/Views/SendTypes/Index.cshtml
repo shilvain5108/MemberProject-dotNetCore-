@@ -2,7 +2,7 @@
 @using MemberManager.Models.ViewSearchModel;
 @using MemberManager.Models.DbModels;
 
-@model List<ProductTypes>
+@model List<SendTypes>
 
 <script type="text/javascript">
 
@@ -15,34 +15,8 @@
 
         delBtn.click(function () {
 
-            var tr = $(this).parents("tr");
-
-            var id = tr.find("input[name='id']").val();
-
-            if (confirm("是否刪除")){
-
-                  $.ajax({
-                    dataType: 'json',
-                    type: 'POST',
-                    url: '@Url.Action("Removed", "ProductTypes")',
-                    data: {
-                        id: id
-                    },
-                    success: function (result) {
-
-                        //儲存成功
-                        if (result.success) {
-
-                            //alert(result.message);
-
-                            tr.hide();
-
-                        } else {
-                            alert(result.message);
-                        }
-                    }
-                });
-            }
+            //var parentTr = $(this).parents("tr");
+            //parentTr.attr("display","none");
         });
 
         searchButton.click(function () {
@@ -51,7 +25,7 @@
                 dataType: 'json',
                 //contentType: 'application/json; charset=utf-8',
                 type: 'POST',
-                url: '@Url.Action("Index", "ProductTypes")',
+                url: '@Url.Action("Index", "SendTypes")',
                 data: JSON.stringify({
                     products: FormDataSerializeJsonString(thisForm)
                 }),
@@ -77,36 +51,36 @@
         <div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <h1>@(ProductTypesSearchModel.ViewTitle)-查詢條件</h1>
+                    <h1>@(SendTypesSearchModel.ViewTitle)-查詢條件</h1>
                     <div class="form-group row">
                         @{
-                            string productTypeName = "";
+                            string sendTypesName = "";
 
-                            ProductTypesSearchModel parameters = ViewData["searchParameters"] as ProductTypesSearchModel;
+                            SendTypesSearchModel parameters = ViewData["searchParameters"] as SendTypesSearchModel;
                             if (parameters != null)
                             {
-                                productTypeName = parameters.productTypeName;
+                                sendTypesName = parameters.sendTypesName;
 
                             }
                         }
                         <label class="col-md-2 col-sm-2 col-xs-6">類別名稱</label>
                         <div class="col-md-2 col-sm-2 col-xs-6">
-                            <input type="text" name="productTypeName" class="form-control" value="@productTypeName" />
+                            <input type="text" name="sendTypesName" class="form-control" value="@sendTypesName" />
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-5 col-sm-5 col-xs-12"></div>
                         <div class="col-md-2 col-sm-2 col-xs-12">
                             <button name="searchButton" class="btn btn-primary">查詢</button>
-                            <a href="@Url.Action("Index", "ProductTypes")" class="btn btn-info editBtn">清除</a>
+                            <a href="@Url.Action("Index", "SendTypes")" class="btn btn-info editBtn">清除</a>
                         </div>
                     </div>
                     <hr>
-                    <h1>@(ProductTypesSearchModel.ViewTitle)-查詢結果</h1>
+                    <h1>@(SendTypesSearchModel.ViewTitle)-查詢結果</h1>
                     <div class="row">
                         <div class="col-md-10 col-sm-10 col-xs-6"></div>
                         <div class="col-md-2 col-sm-2 col-xs-6 text-right">
-                            <a href="@Url.Action("Edit", "ProductTypes")" class="btn btn-success">新增</a>
+                            <a href="@Url.Action("Edit", "SendTypes")" class="btn btn-success">新增</a>
                         </div>
                     </div>
                     <div class="row">
@@ -123,16 +97,14 @@
                                     @{
                                         if (Model != null && Model.Count > 0)
                                         {
-                                            foreach (ProductTypes productTypes in Model)
+                                            foreach (SendTypes productTypes in Model)
                                             {
                                                 <tr>
                                                     <td>@productTypes.name</td>
                                                     <td>@productTypes.sort</td>
                                                     <th class="bulk-actions">
-                                                        <input type="hidden" name="id" value="@productTypes.id" />
-                                                        <a href="@Url.Action("Edit", "ProductTypes" , new { id = productTypes.id })" class="btn btn-primary editBtn">編輯</a>
-                                                        @*<a href="@Url.Action("Removed", "ProductTypes" , new { id = productTypes.id })" class="btn btn-danger delBtn">刪除</a>*@
-                                                        <a href="#" class="btn btn-danger delBtn">刪除</a>
+                                                        <a href="@Url.Action("Edit", "SendTypes" , new { id = productTypes.id })" class="btn btn-primary editBtn">編輯</a>
+                                                        <a href="@Url.Action("Removed", "SendTypes" , new { id = productTypes.id })" class="btn btn-danger delBtn">刪除</a>
                                                     </th>
                                                 </tr>
                                             }

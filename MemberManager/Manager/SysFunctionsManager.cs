@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemberManager.Manager
 {
-    public class SysFunctionsManager : AbstractEntityManager<SysFunctions>
+    public class SysFunctionsManager : AbstractAppEntityManager<SysFunctions>
     {
         public SysFunctionsManager(MemberContext _db,
           IHttpContextAccessor _httpContextAccessor) : base(_db)
@@ -18,6 +18,11 @@ namespace MemberManager.Manager
         public override IQueryable<SysFunctions> GetEntitiesQ()
         {
             return db.SysFunctions.Where(m => !m.removed);
+        }
+
+        public override SysFunctions GetById(Int64 id)
+        {
+            return db.SysFunctions.Where(m => !m.removed && m.id == id).FirstOrDefault();
         }
     }
 }

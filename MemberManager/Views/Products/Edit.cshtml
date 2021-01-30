@@ -24,7 +24,9 @@
                     if (result.success) {
 
                         alert(result.message);
+
                         //儲存成功
+                        self.location = document.referrer;
 
                     } else {
                         //儲存失敗
@@ -97,7 +99,7 @@
             <div class="row">
                 <button type="button" name="saveButton" class="btn btn-primary saveButton">儲存</button>
                 @*<button name="saveButton" type="submit">儲存</button>*@
-                <a href="javascript:history.back()" class="btn btn-info" name="previousPage">回上一頁</a>
+                <a href="@Url.Action("Index", "Products")" class="btn btn-info" name="previousPage">回上一頁</a>
             </div>
         </form>
     </div>

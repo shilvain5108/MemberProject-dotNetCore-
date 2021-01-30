@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace MemberManager.Models.ViewSearchModel
 {
-    public class ProductTypesSearchModel
+    public class SendTypesSearchModel
     {
-        public const string ViewTitle = "產品類別";
+        public const string ViewTitle = "貨品狀態";
 
         public int? pageNumber { get; set; }
         public int? maxPageNumber { get; set; }
 
-        public string productTypeName { get; set; }
+        public string sendTypesName { get; set; }
     }
 }

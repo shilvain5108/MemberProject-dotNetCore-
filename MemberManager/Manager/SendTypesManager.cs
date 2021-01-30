@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemberManager.Manager
 {
-    public class SendTypesManager : AbstractEntityManager<SendTypes>
+    public class SendTypesManager : AbstractAppEntityManager<SendTypes>
     {
         public SendTypesManager(MemberContext _db,
 IHttpContextAccessor _httpContextAccessor) : base(_db)
@@ -18,6 +18,11 @@ IHttpContextAccessor _httpContextAccessor) : base(_db)
         public override IQueryable<SendTypes> GetEntitiesQ()
         {
             return db.SendTypes.Where(m => !m.removed);
+        }
+
+        public override SendTypes GetById(Int64 id)
+        {
+            return db.SendTypes.Where(m => !m.removed && m.id == id).FirstOrDefault();
         }
     }
 }

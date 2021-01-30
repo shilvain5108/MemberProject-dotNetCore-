@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MemberManager.Manager
 {
-    public class ProductTypesManager : AbstractEntityManager<ProductTypes>
+    public class ProductTypesManager : AbstractAppEntityManager<ProductTypes>
     {
         public ProductTypesManager(MemberContext _db,
 IHttpContextAccessor _httpContextAccessor) : base(_db)
@@ -24,6 +24,11 @@ IHttpContextAccessor _httpContextAccessor) : base(_db)
             return db.ProductTypes.Where(m => !m.removed);
         }
 
+        public override ProductTypes GetById(Int64 id)
+        {
+            return db.ProductTypes.Where(m => !m.removed && m.id == id).FirstOrDefault();
+        }
+
         public async Task<List<ProductTypes>> ExcuteQuery(Criteria criteria)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -32,13 +37,13 @@ IHttpContextAccessor _httpContextAccessor) : base(_db)
             sql.Append(" Select * From [" + ProductTypes.TABLE_NAME + "] as pt ");
             sql.Append(" Where 1 = 1 ");
 
-            if(!string.IsNullOrWhiteSpace(criteria.productTypeName))
+            if(!string.IsNullOrWhiteSpace(criteria.name))
             {
                 sql.Append(" And pt.name like @name ");
-                parameters.Add(new SqlParameter("name","%" + criteria.productTypeName + "%"));
+                parameters.Add(new SqlParameter("name","%" + criteria.name + "%"));
             }
 
-            sql.Append(" And pt.removed = 0 ");
+            sql.Append(" And pt.removed = 0 Order By pt.Sort ");
 
             return await db.ProductTypes.FromSqlRaw(sql.ToString(), parameters.ToArray()).ToListAsync();
         }
@@ -59,7 +64,7 @@ IHttpContextAccessor _httpContextAccessor) : base(_db)
 
         public class Criteria
         {
-            public string productTypeName { get; set; }
+            public string name { get; set; }
         }
     }
 }

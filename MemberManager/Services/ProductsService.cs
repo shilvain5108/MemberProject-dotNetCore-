@@ -17,16 +17,19 @@ namespace MemberManager.Services
             productTypesManager = _productTypesManager;
         }
 
-        public List<SelectListItem> GetProductSelectListItemWithSelectedProductTypesId(Int64 selectedProductTypesId)
+        public List<SelectListItem> GetProductSelectListItemWithSelectedProductTypesId(Int64 selectedProductTypesId = 0)
         {
             List<SelectListItem> items = productTypesManager.GetProductSelectListItem();
             if(items != null && items.Count > 0)
             {
-                foreach (SelectListItem item in items)
+                if(selectedProductTypesId > 0)
                 {
-                    if (item.Value.Equals(selectedProductTypesId.ToString()))
+                    foreach (SelectListItem item in items)
                     {
-                        item.Selected = true;
+                        if (item.Value.Equals(selectedProductTypesId.ToString()))
+                        {
+                            item.Selected = true;
+                        }
                     }
                 }
             }

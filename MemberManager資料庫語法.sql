@@ -116,6 +116,9 @@ sort int not null,
 removed bit not null
 )
 
+insert into sendTypes values('備貨中',1,0)
+insert into sendTypes values('出貨中',2,0)
+
 Create Table orderStatus (
 id Bigint identity(1,1) Primary key not null,
 [name] nvarchar(100) default '' not null,

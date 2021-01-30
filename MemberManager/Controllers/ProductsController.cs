@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using X.PagedList;//IPagedList
 
 namespace MemberManager.Controllers
 {
@@ -45,6 +46,8 @@ namespace MemberManager.Controllers
 
         public async Task<IActionResult> Index(ProductSearchModel parameters = null)
         {
+            UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
+
             ProductsManager.Criteria criteria = new ProductsManager.Criteria();
             if (parameters != null)
             {
@@ -55,34 +58,24 @@ namespace MemberManager.Controllers
             List<Products> productses = await productsManager.ExcuteQuery(criteria);
             productsManager.PrepareData(productses);
 
-            UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
-
             ViewData["searchParameters"] = parameters;
 
             //取得產品類別的清單
             List<ProductTypes> productTypeses = productTypesManager.GetEntitiesQ().ToList();
             List<SelectListItem> items = productTypesManager.GetProductSelectListItem();
 
-
-
             ViewData["productTypeses"] = items;
 
             return View(productses);
         }
 
-        public IActionResult Edit(Int64? id)
+        public IActionResult Edit(Int64 id = 0)
         {
-            Products products = new Products();
-            if (id != null && id > 0)
-            {
-                List<Products> productses = productsManager.GetByIds(new List<Int64>() { Convert.ToInt64(id) }).ToList();
+            Products products = null;
+            if (id > 0)
                 products = productsManager.GetById(Convert.ToInt64(id));
-            }
-
-            UserContext userContext = session.GetObjectFromJson<UserContext>(UserContext.SESSION_NAME.ToString());
-            ViewData["userContext"] = userContext;
-
-            List<ProductTypes> productTypeses = productTypesManager.GetEntitiesQ().ToList();
+            else
+                products = new Products();
 
             Int64 productTypesId = 0;
             if (products != null && products.productTypeId > 0)
@@ -93,7 +86,7 @@ namespace MemberManager.Controllers
             return View(products);
         }
 
-        public string Save(Products products)//    string id,string name
+        public async Task<string> Save(Products products)//    string id,string name
         {
             Dictionary<String, Object> valueObject = new Dictionary<string, object>();
 
@@ -116,10 +109,16 @@ namespace MemberManager.Controllers
             {
                 if (editProducts != null)
                 {
-                    productsManager.Save(editProducts);
+                    string result = await Verification(editProducts);
+                    if (string.IsNullOrWhiteSpace(result))
+                    {
+                        productsManager.Save(editProducts);
 
-                    valueObject.Add("success", true);
-                    valueObject.Add("message", "儲存成功");
+                        valueObject.Add("success", true);
+                        valueObject.Add("message", "儲存成功");
+                    }
+                    else
+                        throw new Exception(result);
                 }
                 else
                     throw new Exception("資料錯誤!");
@@ -131,6 +130,50 @@ namespace MemberManager.Controllers
             }
 
             return JsonConvert.SerializeObject(valueObject);
+        }
+
+        public string Removed(Int64 id)
+        {
+            Dictionary<String, Object> valueObject = new Dictionary<string, object>();
+
+            try
+            {
+                productsManager.Removed(id);
+
+                valueObject.Add("success", true);
+                valueObject.Add("message", "儲存成功");
+            }
+            catch (Exception ex)
+            {
+                valueObject.Add("success", false);
+                valueObject.Add("message", "儲存失敗，錯誤訊息:" + ex.Message);
+            }
+
+            return JsonConvert.SerializeObject(valueObject);
+        }
+
+        //確認名稱不可與現有的產品名稱重複
+        public async Task<string> Verification(Products products)
+        {
+            string result = "";
+
+            ProductsManager.Criteria criteria = new ProductsManager.Criteria();
+            criteria.name = products.name;
+            criteria.productTypesId = products.productTypeId;
+
+            List<Products> tempProductses = await productsManager.ExcuteQuery(criteria);
+            if (tempProductses != null && tempProductses.Count > 0)
+            {
+                Products tempProducts = tempProductses.FirstOrDefault();
+                if ((products.id <= 0 && tempProductses.Count >= 1) ||
+                    (products.id > 0 && tempProductses.Count > 1) ||
+                    (tempProductses.Count == 1 && tempProducts.id != products.id))
+                {
+                    result = "產品名稱重複";
+                }
+            }
+
+            return result;
         }
     }
 }

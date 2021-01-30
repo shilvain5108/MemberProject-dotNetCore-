@@ -18,21 +18,13 @@ namespace MemberManager.Manager
             db = _db;
         }
 
+        public abstract T GetById(Int64 id);
+
         public abstract IQueryable<T> GetEntitiesQ();
 
         public virtual IQueryable<T> GetByIds(List<Int64> ids)
         {
             return GetEntitiesQ().Where(item => ids.Contains(item.id));
-        }
-
-        public virtual void Delete(List<Int64> ids)
-        {
-            List<T> entities = GetByIds(ids).ToList();
-            foreach (T entity in entities)
-            {
-                db.Entry(entity).State = EntityState.Deleted;
-            }
-            db.SaveChanges();
         }
 
         public virtual void Save(T entity)

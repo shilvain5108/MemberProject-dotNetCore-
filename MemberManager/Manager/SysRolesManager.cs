@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemberManager.Manager
 {
-    public class SysRolesManager : AbstractEntityManager<SysRoles>
+    public class SysRolesManager : AbstractAppEntityManager<SysRoles>
     {
         public SysRolesManager(MemberContext _db,
             IHttpContextAccessor _httpContextAccessor) : base(_db)
@@ -18,6 +18,11 @@ namespace MemberManager.Manager
         public override IQueryable<SysRoles> GetEntitiesQ()
         {
             return db.SysRoles.Where(m => !m.removed);
+        }
+
+        public override SysRoles GetById(Int64 id)
+        {
+            return db.SysRoles.Where(m => !m.removed && m.id == id).FirstOrDefault();
         }
     }
 }

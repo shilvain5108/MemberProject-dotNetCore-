@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MemberManager.Manager
 {
-    public class MembersManager : AbstractEntityManager<Members>
+    public class MembersManager : AbstractAppEntityManager<Members>
     {
         public MembersManager(MemberContext _db,
    IHttpContextAccessor _httpContextAccessor) : base(_db)
@@ -20,11 +20,11 @@ namespace MemberManager.Manager
             return db.Members.Where(m => !m.removed);
         }
 
-        public Members GetById(Int64 memberId)
+        public override Members GetById(Int64 id)
         {
-            Members member = db.Members.Find(memberId);
-            return member;
+            return db.Members.Where(m => !m.removed && m.id == id).FirstOrDefault();
         }
+
         public Members GetByAcc(string account)
         {
             Members member = null;

@@ -7,8 +7,9 @@
 
     $(function () {
 
-        var thisForm = $("form[name='productForm']");
+        var thisForm = $("form[name='searchForm']");
         var searchButton = $("button[name='searchButton']");
+
 
         searchButton.click(function () {
 
@@ -34,12 +35,44 @@
                 }
             });
         });
+
+        var delBtn = $(".delBtn");
+        delBtn.click(function () {
+
+            var tr = $(this).parents("tr");
+            var id = tr.find("input[name='id']").val();
+
+            if (confirm("是否刪除")){
+
+                  $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    url: '@Url.Action("Removed", "Products")',
+                    data: {
+                        id: id
+                    },
+                    success: function (result) {
+
+                        //儲存成功
+                        if (result.success) {
+
+                            //alert(result.message);
+
+                            tr.hide();
+
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                });
+            }
+        });
     });
 
 </script>
 
 <div class="text-center">
-    <form name="productForm" method="post" action="@Url.Action("Index","Products")" class="form-horizontal form-label-left">
+    <form name="searchForm" method="post" class="form-horizontal form-label-left">
         <div>
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -74,6 +107,12 @@
                     <hr>
                     <h1>@(ProductSearchModel.ViewTitle)-查詢結果</h1>
                     <div class="row">
+                        <div class="col-md-10 col-sm-10 col-xs-6"></div>
+                        <div class="col-md-2 col-sm-2 col-xs-6 text-right">
+                            <a href="@Url.Action("Edit", "Products")" class="btn btn-success">新增</a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
                             <table class="table table-striped jambo_table bulk_action" name="productsTable" style="border:3px #cccccc solid;" cellpadding="10" border='1'>
                                 <thead>
@@ -81,6 +120,7 @@
                                         <td style="font-weight:bold;color:saddlebrown">商品名稱</td>
                                         <td style="font-weight:bold;color:saddlebrown">商品類別</td>
                                         <td style="font-weight:bold;color:saddlebrown">商品價格</td>
+                                        <td style="font-weight:bold;color:saddlebrown">排序</td>
                                         <td style="font-weight:bold;color:saddlebrown">功能</td>
                                     </tr>
                                 </thead>
@@ -100,8 +140,11 @@
                                                     }
 
                                                     <td>@products.price</td>
+                                                    <td>@products.sort</td>
                                                     <th class="bulk-actions">
+                                                        <input type="hidden" name="id" value="@products.id" />
                                                         <a href="@Url.Action("Edit", "Products" , new { id = products.id })" class="btn btn-primary editBtn">編輯</a>
+                                                        <a href="#" class="btn btn-danger delBtn">刪除</a>
                                                     </th>
                                                 </tr>
                                             }
@@ -115,4 +158,5 @@
             </div>
         </div>
     </form>
+
 </div>
