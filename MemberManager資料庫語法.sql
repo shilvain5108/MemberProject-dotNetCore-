@@ -1,5 +1,5 @@
 
-
+123
 
 Create DataBase MemberDB
 
@@ -15,9 +15,9 @@ loginPwd nvarchar(max) default '' not null,
 removed bit not null
 )
 
-insert into members values('ÁÂ¥@¤å','0981712610','1991-08-17','admin','12345',0)--1
-insert into members values('ÁÂ¥@¤å-¨Ï¥ÎªÌ±b¸¹','0981712610','1991-08-17','member','12345',0)--2
-insert into members values('ÁÂ¥@¤å-°Ó®a±b¸¹','0981712610','1991-08-17','business','12345',0)--3
+insert into members values('è¬ä¸–æ–‡','0981712610','1991-08-17','admin','12345',0)--1
+insert into members values('è¬ä¸–æ–‡-ä½¿ç”¨è€…å¸³è™Ÿ','0981712610','1991-08-17','member','12345',0)--2
+insert into members values('è¬ä¸–æ–‡-å•†å®¶å¸³è™Ÿ','0981712610','1991-08-17','business','12345',0)--3
 
 Create Table sysRoles (
 id Bigint identity(1,1) Primary key not null,
@@ -25,9 +25,9 @@ id Bigint identity(1,1) Primary key not null,
 removed bit not null
 )
 
-insert into sysRoles values('Admin',0)--1 ºô¯¸ºŞ²z­û
-insert into sysRoles values('Member',0)--2 ¤@¯ë¨Ï¥ÎªÌ
-insert into sysRoles values('Business',0)--3 °Ó®a
+insert into sysRoles values('Admin',0)--1 ç¶²ç«™ç®¡ç†å“¡
+insert into sysRoles values('Member',0)--2 ä¸€èˆ¬ä½¿ç”¨è€…
+insert into sysRoles values('Business',0)--3 å•†å®¶
 
 Create Table memberRoles (
 id Bigint identity(1,1) Primary key not null,
@@ -50,8 +50,8 @@ sort int not null,
 removed bit not null
 )
 
-insert into sysFunctions values(0,'²£«~','Products','Index',1,0)
-insert into sysFunctions values(0,'²£«~Ãş«¬','ProductTypes','Index',1,0)
+insert into sysFunctions values(0,'ç”¢å“','Products','Index',1,0)
+insert into sysFunctions values(0,'ç”¢å“é¡å‹','ProductTypes','Index',1,0)
 
 Create Table sysRolesFunctions (
 id Bigint identity(1,1) Primary key not null,
@@ -93,8 +93,8 @@ sort int not null,
 removed bit not null
 )
 
-insert into productTypes values('3C²£«~',1,0)
-insert into productTypes values('®a¹q',2,0)
+insert into productTypes values('3Cç”¢å“',1,0)
+insert into productTypes values('å®¶é›»',2,0)
 
 
 Create Table products (
@@ -106,8 +106,8 @@ sort int not null,
 removed bit not null
 )
 
-insert into products values(1,'ÂÅªŞ¦Õ¾÷',1990,1,0)
-insert into products values(2,'·LªiÄl',5990,1,0)
+insert into products values(1,'è—èŠ½è€³æ©Ÿ',1990,1,0)
+insert into products values(2,'å¾®æ³¢çˆ',5990,1,0)
 
 Create Table sendTypes (
 id Bigint identity(1,1) Primary key not null,
@@ -116,8 +116,8 @@ sort int not null,
 removed bit not null
 )
 
-insert into sendTypes values('³Æ³f¤¤',1,0)
-insert into sendTypes values('¥X³f¤¤',2,0)
+insert into sendTypes values('å‚™è²¨ä¸­',1,0)
+insert into sendTypes values('å‡ºè²¨ä¸­',2,0)
 
 Create Table orderStatus (
 id Bigint identity(1,1) Primary key not null,
